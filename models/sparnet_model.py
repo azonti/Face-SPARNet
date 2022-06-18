@@ -35,8 +35,11 @@ class SPARNetModel(BaseModel):
     def load_pretrain_model(self,):
         print('Loading pretrained model', self.opt.pretrain_model_path)
         weight = torch.load(self.opt.pretrain_model_path)
-        self.netG.module.load_state_dict(weight)
-    
+        if len(self.opt.gpu_ids) > 0:
+            self.netG.module.load_state_dict(weight)
+        else:
+            self.netG.load_state_dict(weight)
+
     def set_input(self, input, cur_iters=None):
         self.cur_iters = cur_iters
         self.img_LR = input['LR'].to(self.opt.data_device)
